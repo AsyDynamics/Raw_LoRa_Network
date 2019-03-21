@@ -1,5 +1,5 @@
 
-# LoRa_Private_Network
+# Raw LoRa Network
 This is my attemp to implement a private network in **raw LoRa layer** based on arduino-LoRa library(https://github.com/sandeepmistry/arduino-LoRa). The hardware consists of Nodemcu as Gateway and Arduino pro mini as Node. Both Gateway and Node use Ra-02 (rfm98) as LoRa transceiver module. The system features:
 * TDMA like class B to save energy
 * Beacon message to sync time needed for TDMA
@@ -35,7 +35,7 @@ Modified to send downlink message upon each uplink with instruction. Thus reserv
 * uplink message <br>
 [ destination Addr | groupID | local Addr | msg count | integer of pt100-1 | decimal of pt100-1 | other sensor values divied into integer and decimal ]
 * beacon message <br>
-[ destination Addr | groupID | local Addr | msg count | Hour | Minute | Second | Day | Month | Year ]
+[ destination Addr | groupID | local Addr | msg count | Hour | Minute | Second | Day | Month | Year ] <br>
 Destination Addr: 0x00-Gateway, 0xFF-broadcast (reserved for beacon message)
 Local Addr: 0x00-Gateway, 0x01-0xFE for Nodes
 
