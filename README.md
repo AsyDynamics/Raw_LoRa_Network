@@ -27,11 +27,15 @@ No private downlink message. Instructions embedded in Beacon message following g
 Modified to send downlink message upon each uplink with instruction. Thus reserve a lora.read() window for Node after each SP
 
 # Data structure
+## v2-21.02.2019
+* uplink and beacon remained
+* downlink from gateway <br>
+[ destination Addr | groupID | local Addr | msg count | actuator ID | instruction | if any more ]
 ## v1-20.03.2019
 * uplink message <br>
-| destination Addr | groupID | local Addr | msg count | integer of pt100-1 | decimal of pt100-1 | other sensor values divied into integer and decimal
+[ destination Addr | groupID | local Addr | msg count | integer of pt100-1 | decimal of pt100-1 | other sensor values divied into integer and decimal ]
 * beacon message <br>
-| destination Addr | groupID | local Addr | msg count | Hour | Minute | Second | Day | Month | Year |
+[ destination Addr | groupID | local Addr | msg count | Hour | Minute | Second | Day | Month | Year ]
 Destination Addr: 0x00-Gateway, 0xFF-broadcast (reserved for beacon message)
 Local Addr: 0x00-Gateway, 0x01-0xFE for Nodes
 
@@ -50,6 +54,8 @@ Simplex mode, just sensor data from Node to Gateway. Connected to thingsboard.
 
 # Test log
 ## Distance
+*  15.03.2019, 435Mhz, SF-10, BD-125, txPower-17, (5dbi?) antenna at 3rd floor indoor <br>. Result: 400m -108 ~ -125
+![2](https://user-images.githubusercontent.com/33332225/54755892-53fb0880-4be7-11e9-851b-d2843232f41c.PNG)
 ## Power consumption
 
 # Task
