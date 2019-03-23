@@ -64,8 +64,9 @@ Simplex mode, just sensor data from Node to Gateway. Connected to thingsboard.
 - [x] Get real time from NTP server
 - [x] Connect to IoT platform
 - [x] Duplex mode for both Gateway and Nodes
+- [x] Play with Node-RED with conclusion that it doesn't support multi-user/dashboard by itself
 - [ ] Make UI for instruction input
-- [ ] Embed watchdog timer & power_down with current structure on pro mini
+- [ ] Intergrate watchdog timer & power_down with current structure on pro mini
 - [ ] Test how setTime() in time library works or if checking setStatus() is needed
 - [ ] Evaluate if necessary to compensate time dirft of pro mini considering the Beacon Period could be set to 1 or 2 minutes which is quite short
 - [ ] Implement readServer() on Gateway and save instruction in stack
