@@ -27,6 +27,8 @@ No private downlink message. Instructions embedded in Beacon message following g
 Modified to send downlink message upon each uplink with instruction. Thus reserve a lora.read() window for Node after each SP
 
 # Data structure
+Uplink | Beacon | Downlink
+![data structure](https://user-images.githubusercontent.com/33332225/54878046-04a31b00-4e27-11e9-8c0c-db702a6616dd.png)
 ## v2-21.02.2019
 * uplink and beacon remained
 * downlink from gateway <br>
@@ -46,6 +48,8 @@ Single node with two PT100 sensors and one BME280
 ![Capture](https://user-images.githubusercontent.com/33332225/54751624-d41b7100-4bdb-11e9-89bb-22feffd5c008.PNG)
 
 # Development log
+## node-v3 and gateway-v3, 23.03.2019
+More stable compared with v2. Fixed the syncTime problem.
 ## node-v2 and gateway-v2, 20.03.2019
 Duplex mode. Broadcast Beacon per 2 minutes. No private downlink from Gateway after each uplink. SP based on localAddress not implemented yet in code but designed in comment. Bascially both Gateway and Node works fine but Node sometimes send uplink message not on correct time.
 
