@@ -78,4 +78,4 @@ Simplex mode, just sensor data from Node to Gateway. Connected to thingsboard.
 - [ ] Implement readDownlink() on Node, and reserve callAcutator() function
 - [ ] Implement data encryption
 - [ ] Node as forwarder or mesh network
-- [ ] Listen Before Talk if necessary
+- [x] Listen Before Talk if necessary; need timeout to avoid lockup
