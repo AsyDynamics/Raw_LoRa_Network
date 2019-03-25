@@ -50,7 +50,7 @@ Single node with two PT100 sensors and one BME280
 
 
 # Development log
-## node-v3 and gateway-v3, 23.03.2019
+## node-v3 and gateway-v3, 25.03.2019
 More stable compared with v2. Fixed the syncTime problem.
 ## node-v2 and gateway-v2, 20.03.2019
 Duplex mode. Broadcast Beacon per 2 minutes. No private downlink from Gateway after each uplink. SP based on localAddress not implemented yet in code but designed in comment. Bascially both Gateway and Node works fine but Node sometimes send uplink message not on correct time.
