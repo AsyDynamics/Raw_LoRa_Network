@@ -1,3 +1,4 @@
+# LoRa
 * NTP tutorial: https://lastminuteengineers.com/esp32-ntp-server-date-time-tutorial/
 
 * global variable defined in header file: extern TYPE VAR_NAME
@@ -11,3 +12,20 @@ preamble + header + payload
 The receiver undertakes a preamble detection process that periodically restarts. For this reason the preamble length should be configured identical to the transmitter preamble length. Where the preamble length is not known, or can vary, the maximum preamble length should be programmed on the receiver side. 
 
 **Header** default mode is explict. In certain scenarios, where the payload, coding rate and CRC presence are fixed or known in advance, it may be advantageous to reduce transmission time by invoking implicit header mode. In this mode the header is removed from the packet. In this case the payload length, error coding rate and presence of the payload CRC must be manually configured on both sides of the radio link. 
+
+# Node RED
+## Database and Chart
+* Using **DashDB** to store data in IBM cloud. https://internet-of-things.blog/en/how-to-backup-and-restore-chart-data-in-node-red-dashboard/
+* Using **node-red-contrib-graphs** package with JSON format including UNIX timestamp. https://flows.nodered.org/node/node-red-contrib-graphs
+
+## Homekit and Homekit-bridged
+
+# JSON
+
+# openHAB
+
+# mimic NOIP
+* remote.it or weaved https://remote.it/
+* ngrok https://ngrok.com/ ```ngrok http portNum```
+* dataplicity https://dataplicity.com 
+* nginx https://www.nginx.com/ to host a webserver
