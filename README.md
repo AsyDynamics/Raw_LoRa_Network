@@ -72,6 +72,8 @@ Simplex mode, just sensor data from Node to Gateway. Connected to thingsboard.
 - [x] Connect to IoT platform
 - [x] Duplex mode for both Gateway and Nodes
 - [x] Play with Node-RED with conclusion that it doesn't support multi-user/dashboard by itself
+- [ ] Implement re-syncTime for fear of lost beacon and timedrift caused beacon-recv-window drift
+- [ ] Timeout of syncTime
 - [ ] Make UI for instruction input
 - [ ] Intergrate watchdog timer & power_down with current structure on pro mini
 - [ ] Test how setTime() in time library works or if checking setStatus() is needed
