@@ -50,6 +50,9 @@ Single node with two PT100 sensors and one BME280
 
 
 # Development log
+## node-v3-mimic-multiNode and gateway-nodered-v2-mimic, 27.03.2019
+Mimic multiple node and create node red dashboard <br>
+![screencapture-192-168-178-38-1880-ui-2019-03-27-22_29_00](https://user-images.githubusercontent.com/33332225/55115008-bb332400-50e3-11e9-9f00-bb2a69edd5f9.jpg)
 ## node-v3 and gateway-v3, 25.03.2019
 More stable compared with v2. Fixed the syncTime problem.
 ## node-v2 and gateway-v2, 20.03.2019
@@ -72,9 +75,10 @@ Simplex mode, just sensor data from Node to Gateway. Connected to thingsboard.
 - [x] Connect to IoT platform
 - [x] Duplex mode for both Gateway and Nodes
 - [x] Play with Node-RED with conclusion that it doesn't support multi-user/dashboard by itself
+- [x] Listen Before Talk if necessary; need timeout to avoid lockup; not intergrate with current code
+- [x] Make UI for instruction input; simpled button and switch on node red
 - [ ] Implement re-syncTime for fear of lost beacon and timedrift caused beacon-recv-window drift
 - [ ] Timeout of syncTime
-- [ ] Make UI for instruction input
 - [ ] Intergrate watchdog timer & power_down with current structure on pro mini
 - [ ] Test how setTime() in time library works or if checking setStatus() is needed
 - [ ] Evaluate if necessary to compensate time dirft of pro mini considering the Beacon Period could be set to 1 or 2 minutes which is quite short
@@ -83,4 +87,4 @@ Simplex mode, just sensor data from Node to Gateway. Connected to thingsboard.
 - [ ] Implement readDownlink() on Node, and reserve callAcutator() function
 - [ ] Implement data encryption
 - [ ] Node as forwarder or mesh network
-- [x] Listen Before Talk if necessary; need timeout to avoid lockup
+
