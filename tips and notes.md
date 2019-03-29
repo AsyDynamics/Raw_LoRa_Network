@@ -19,6 +19,11 @@ The receiver undertakes a preamble detection process that periodically restarts.
 * Using **node-red-contrib-graphs** package with JSON format including UNIX timestamp. https://flows.nodered.org/node/node-red-contrib-graphs
 
 ## Homekit and Homekit-bridged
+Bridged is better
+
+## Others
+Using datepicker from dashboard and moment.js to convert to ISO8601 or UNIX timestamp, there is 48825(unix) drift, ahead of wanted time.
+That's to say, if pick 01-01-1970 it gives you 48825 rather than 0. Bear in mind with this when plot historical data that needs to compare timestammp.
 
 # JSON
 
