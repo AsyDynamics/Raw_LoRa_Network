@@ -22,8 +22,8 @@ The receiver undertakes a preamble detection process that periodically restarts.
 Bridged is better
 
 ## Others
-Using datepicker from dashboard and moment.js to convert to ISO8601 or UNIX timestamp, there is 48825(unix) drift, ahead of wanted time.
-That's to say, if pick 01-01-1970 it gives you 48825 rather than 0. Bear in mind with this when plot historical data that needs to compare timestammp.
+* Using datepicker from dashboard and moment.js to convert to ISO8601 or UNIX timestamp, there is 48825(unix) drift, ahead of wanted time. That's to say, if pick 01-01-1970 it gives you 48825 rather than 0. Bear in mind with this when plot historical data that needs to compare timestammp. See following configure: <br>
+![Capture](https://user-images.githubusercontent.com/33332225/55237804-44a53c00-5233-11e9-806e-5f284d71594c.PNG)
 
 # JSON
 
