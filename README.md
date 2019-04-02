@@ -87,4 +87,4 @@ Simplex mode, just sensor data from Node to Gateway. Connected to thingsboard.
 - [ ] Implement readDownlink() on Node, and reserve callAcutator() function
 - [ ] Implement data encryption
 - [ ] Node as forwarder or mesh network
-
+- [x] Create Timeseries database using influxDB and sqlite; display historical chart on Grafana with influxDB and on Node-RED dashboard with sqlite; implement time range selection
