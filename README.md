@@ -89,11 +89,11 @@ Results: 440m, RSSI:-117 ~ -119
 - [x] Play with Node-RED with conclusion that it doesn't support multi-user/dashboard by itself
 - [x] Listen Before Talk if necessary; need timeout to avoid lockup; not intergrate with current code
 - [x] Make UI for instruction input; simpled button and switch on node red
-- [ ] Implement re-syncTime for fear of lost beacon and timedrift caused beacon-recv-window drift
-- [ ] Timeout of syncTime
+- [x] Implement re-syncTime for fear of lost beacon and timedrift caused beacon-recv-window drift || not necessary, if beacon is lost or local time is incorrect, it will go into syncTime mode anyway, and until it get synced it will not jump out of the loop
+- [x] Timeout of syncTime || not necesary, if the beacon message is not received on time, it means either the local time is incorrect or something wrong with the beacon server, thus need to figure it out
 - [ ] Intergrate watchdog timer & power_down with current structure on pro mini
-- [ ] Test how setTime() in time library works or if checking setStatus() is needed
-- [ ] Evaluate if necessary to compensate time dirft of pro mini considering the Beacon Period could be set to 1 or 2 minutes which is quite short
+- [x] Test how setTime() in time library works or if checking setStatus() is needed || the +1 sec ahead sometimes is too fast, maybe insert some delay
+- [x] Evaluate if necessary to compensate time dirft of pro mini considering the Beacon Period could be set to 1 or 2 minutes which is quite short || the time drift of pro mini 8Mhz is around 1s per 2 minutes, thus with a 1-min-beacon-period there is no worry
 - [ ] Implement readServer() on Gateway and save instruction in stack
 - [ ] Implement sendDownlink() on Gateway
 - [ ] Implement readDownlink() on Node, and reserve callAcutator() function
