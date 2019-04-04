@@ -34,3 +34,61 @@ Bridged is better
 * ngrok https://ngrok.com/ ```ngrok http portNum```
 * dataplicity https://dataplicity.com 
 * nginx https://www.nginx.com/ to host a webserver
+
+# Software state flow
+## TDMA
+Using the Low Power library, arduino loses the function of keep date/time running. Thus the software could be modified as to sleep-to-next-BP-or-SP rather keep arduino running and checking if the BP or SP is triggered. To do so, seveal variable could be defined:
+~~~
+#define BP            1  // minute
+#define preBP         2  // second, time to wakeup ahead of BP
+#define localAddr     12 // from 1 to 254, 0 reserved for gateway, 255 reserved for broadcast
+#define preSP         1  // second, time to wakep ahead of SP
+#define SP_H          1  // sense period in hour
+#define SP_M          15 // sense period in minute
+#define SP_offset_m   ceil(localAddr / 10.0)-1   // minus one minute, as the current minute is 0
+#define SP_offset_s   ((localAddr-1) % 10 + 1)*5 // fist minus one, otherwise the node with addr-10 is not easy to be allocated
+#define recvTimeout   3  // second, time reserved for downlink slot
+~~~
+The **sleep-to-next-BP-or-SP** could be divided into two scenarios: <br>
+For none Sense Period scenario, the sleep time after receving beacon is fixed, as the blue part indicated in the chart.
+~~~
+sleep(60-preBP);
+~~~
+![time-nonSP](https://user-images.githubusercontent.com/33332225/55567034-3193df80-56fd-11e9-8208-57fa47af6528.png)
+
+For Sense Period scenario, the sleep time could be dynamic due to possible callback command from server. Thus the sleep time in that minute actually consists of two parts, the one before SP and the one after SP. For the previous one, just
+~~~
+sleep(SP_offset_s - preSP);
+~~~
+And for the latter one, it should be calculated 
+~~~
+sleep( 60-preBP - callback_finished_time_corresponding_to_0_second);
+~~~
+![time-SP](https://user-images.githubusercontent.com/33332225/55567030-2ccf2b80-56fd-11e9-8fa5-f7face27a53f.png)
+The above mentioned logic could be represented by
+~~~
+HH = LoRa.read();
+MM = LoRa.read();
+
+if ( HH % SP_H == 0 && (MM-SP_offset_m) % SP_M == 0){  // at that hour, and that(SP) minute
+  sleep(SP_offset_s - preSP);                          // sleep to SP, then wake up and do some stuff
+  
+  long preSPstamp = millis();
+  readSensor();
+  while(millis()-preSPstamp < preSP*1000){
+    // do nothing
+  }
+  sendMessage();
+  bool downlinkFlag = false;
+  while(millis()-preSPstamp< (preSP + downlinkTimeout)*1000 && !downlinkFlag){
+    readDownlink();
+    callback(); // do some stuff, maybe run a actuator
+    downlinkFlag = true;
+  }
+  // then go back to sleep again, may need to check if this is negative
+  sleep( 60-preBP - (millis()-preSPstamp)/1000 - (SP_offset_s-preSP)); 
+}
+else {
+  sleep(BP*60 - preBP);  // sleep to next BP
+}
+~~~
