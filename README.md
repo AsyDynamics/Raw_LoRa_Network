@@ -20,9 +20,11 @@ This is my attemp to implement a private network in **raw LoRa layer** based on 
 ![lora state machie (1)](https://user-images.githubusercontent.com/33332225/54755549-74769300-4be6-11e9-8199-ed42681b27d6.png)
 
 # TDMA scheme
-## v2-21.03.2019
+## v2-4.4.2019
+Added some sketch to better illustrate and calculate the desired sleep time. Detail at https://github.com/AsyDynamics/Raw_LoRa_Network/blob/master/tips%20and%20notes.md#tdma <br>
+## v2-21.3.2019
 Modified to send downlink message upon each uplink with instruction. Thus reserve a lora.read() window for Node after each SP
-## v1-20.03.2019
+## v1-20.3.2019
 No private downlink message. Instructions embedded in Beacon message following global time
 ![lora tdma](https://user-images.githubusercontent.com/33332225/54752895-ea2b3080-4bdf-11e9-9933-cb70d1354f7d.png)
 
@@ -30,9 +32,11 @@ No private downlink message. Instructions embedded in Beacon message following g
 # Data structure
 Uplink | Beacon | Downlink
 ![data structure](https://user-images.githubusercontent.com/33332225/54878046-04a31b00-4e27-11e9-8c0c-db702a6616dd.png)
-## vX-3.04.2019
-* Consider sending message length as well to make sure the recved message is complete.
-## v2-21.02.2019
+## v3.1-3.4.2019
+* Consider removing Year, Month, Day, Second in beacon message with v4-program, since there is no clock running on nodes. They just need to know when is XX:YY:00 <br>
+## v3-3.4.2019
+* Consider sending message length as well to make sure the recved message is complete || haven't implemented
+## v2-21.2.2019
 * uplink and beacon remained
 * downlink from gateway <br>
 [ destination Addr | groupID | local Addr | msg count | actuator ID | instruction | if any more ]
@@ -52,6 +56,8 @@ Single node with two PT100 sensors and one BME280
 
 
 # Development log
+## node-v4-mimicMultiNode-withoutSensor-lowPower, 4.4.2019
+Upgrade the software structure with updated TDMA (https://github.com/AsyDynamics/Raw_LoRa_Network/blob/master/tips%20and%20notes.md#tdma) strategy; enable power down with LowPower library <br>
 ## node-v4-downlink-basicSketch, 3.4.2019
 Not complete yet, added mode selection at bootup (setup) stage, with four modes in total, 00-debug, 01-lowTxPower, 10-mediumTxPower, 11-highTxPower respectively; Make it clear how Sense Period offset is calculated based on SP and localAddr; Define sensor structor to use it more conviently; Implement the basic of receiving slot after each SP, the downlink recv and actuator operation; Watchdog and powerdown still not taken into account <br>
 ## node-v3-mimic-multiNode and gateway-nodered-v2-mimic, 27.03.2019
