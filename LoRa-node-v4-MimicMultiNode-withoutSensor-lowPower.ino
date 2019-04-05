@@ -1,10 +1,12 @@
 #include "node_v4.h"
 
 void setup() {
-  // initSensor();
-  // setMode();
+  initSensor();
   initLora();
+  setMode();
+  attachInterrupt(digitalPinToInterrupt(button_pin), onRISING, RISING);
   syncTime();
+  
 }
 
 void loop() {
