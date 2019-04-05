@@ -191,7 +191,11 @@ void onReceive(int packetSize) {
   payload += "\"Rssi\":"; payload += String(loraRSSI); payload += ",";
 
   switch(sensorMode){ // read sensor mode, A-2*PT100, B-TempEnv, C-Humid, D-Pressure,
-    default: case 0:
+    case 0:
+      payload += "\"LoRa_test_rssi\":"; payload += String(msgContent[2]);
+      payload += "}";
+      break;
+    default: case 1:
       byte i = 2; // first two bits: 0-localAddr, 1-sensorMode, sensor value start from 2
       float bmeT = byte2float(msgContent[i++], msgContent[i++]);
       float bmeH = byte2float(msgContent[i++], msgContent[i++]);
@@ -207,10 +211,10 @@ void onReceive(int packetSize) {
       payload += "\"Altitude\":"; payload += String(bmeA);
       payload += "}";
       break;
-    case 1:
+    case 2:
       // dummy demo of different combination of the sensors
       break;
-    case 2:
+    case 3:
       break;
   }
 
