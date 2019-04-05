@@ -9,7 +9,7 @@
 #define groupID           0
 #define destination       0 // gateway
 #define broadcastAddr     0xFF
-#define sensorMode        0
+#define sensorMode        1
 
 // operation configuration
 #define preBP             2
@@ -23,12 +23,14 @@
 // timeout configuration
 #define initLoraTimeout   5
 #define downlinkTimeout   3
-#define debugTimeout      120
+#define testInterval      5
+#define displayTimeout    5
 
 // sensor configuration
 #define led_pin           A0
 #define oneWire_pin       A0
 #define sensor_cs_pin     A0
+#define button_pin
 
 // lora configuration
 #define lora_freq         435E6
@@ -82,6 +84,17 @@ void callback(command1, command2){
 }
 
 // *****************************************************
+void displaySensor(){
+  oled.set2x();
+  oled.println("Node" + String(localAddr) + " Sensor Data");
+  oled.set1x();
+  oled.print("Temp_in:"); oled.print(String(Temp_in));
+  oled.print(" Temp_out:"); oled.println(String(Temp_out));
+  oled.print("Temp_env:"); oled.print(String(Temp_env));
+  oled.print("Humid:"); oled.println(String(Humid));
+}
+
+// *****************************************************
 void enter_sleep(float sleep_t) {
   byte counter8 = byte(sleep_t / 8);
   for (byte i = 0; i < counter8; i++) {
@@ -112,7 +125,7 @@ void initLora() {
 
 // *****************************************************
 void initSensor(){
-  // dummy demo
+  pinMode(button_pin, INPUT);
 }
 
 // *****************************************************
@@ -122,6 +135,18 @@ void ledBlink(int interval) {
     previousMiilis = currentMillis;
     digitalWrite(led_pin, !digitalRead(led_pin));
   }
+}
+
+// ****************************************************
+// should register interrupt in setup: attachInterrupt(digitalPinToInterrupt(button_pin), onRISING, RISING); //
+void onRISING(){
+  readSensor();
+  unsigned long currentMillis = millis();
+  displaySensor();
+  while ( millis()-currentMillis < displayTimout*1000 ){
+  //  do nothing
+  }
+  oled.clear();
 }
 
 // *****************************************************
@@ -185,8 +210,40 @@ void sendMessage(byte localAddress) {
 }
 
 // *****************************************************
-byte setMode(){
-  return 1; // dummy demo, 0-debug/lora test, 1-lowTxPower, 2-highTxPower, 3-senseOnly
+void setMode(){
+  bool status1 = digitalRead(button_pin);
+  delay(50);
+  bool status2 = digitalRead(button_pin);
+  delay(50);
+  bool status3 = digitalRead(button_pin);
+  unsigned long testMillis = millis();
+  while (status1 && status2 && status3){
+    int testRSSI = 0;
+    while( millis() - testMillis > testInterval*1000 ){
+      testMillis = millis();
+      LoRa.idle();
+      LoRa.disableInvertIQ();
+      byte message[] = {10, destination, groupID, localAddr, 0, testRSSI, random(255), random(255), random(255), random(255)}; // msgLength|destination|group|localAddr|sensorMode|value, sensorMode-0 reserved for debug mode
+      LoRa.beginPacket();
+      for (int i=0; i<10; i++){
+        LoRa.write(message[i]);
+      }
+      LoRa.endPacket();
+      LoRa.enableInvertIQ();
+      LoRa.receive();
+    }
+
+    if (LoRa.parsePacket()){
+      if (LoRa.available() == LoRa.read()){ // first byte is msg length
+        byte recipient = LoRa.read();
+        byte group  = LoRa.read();
+        if ( (recipient==localAddr || recipient==broadcastAddr) && group == groupID ){
+          testRSSI = LoRa.packetRssi();
+        }
+      }
+    }
+
+  } // testLoRa mode
 }
 
 // *****************************************************
