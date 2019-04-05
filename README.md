@@ -30,8 +30,10 @@ No private downlink message. Instructions embedded in Beacon message following g
 
 
 # Data structure
-Uplink | Beacon | Downlink
-![data structure](https://user-images.githubusercontent.com/33332225/54878046-04a31b00-4e27-11e9-8c0c-db702a6616dd.png)
+Uplink | Beacon | Downlink | MQTT-payload from server
+![data (1)](https://user-images.githubusercontent.com/33332225/55631222-d672f300-57b7-11e9-8637-3f4aea1ae191.png) <br>
+## v3.2-5.4.2019
+* Include message length; remove useless msgID; Implement control command of max 3 switches in downlink
 ## v3.1-3.4.2019
 * Consider removing Year, Month, Day, Second in beacon message with v4-program, since there is no clock running on nodes. They just need to know when is XX:YY:00 <br>
 ## v3-3.4.2019
@@ -56,6 +58,9 @@ Single node with two PT100 sensors and one BME280
 
 
 # Development log
+## gateway-v4, node-v4, 5.4.2019
+**Gateway**: Implement sendDownlink inside LoRa onReceive function; implement reading command from MQTT server and sendDownlink(); Simplify the beacon message <br>
+**Node**: Implement readDownlink
 ## node-v4-mimicMultiNode-withoutSensor-lowPower, 4.4.2019
 Upgrade the software structure with updated TDMA (https://github.com/AsyDynamics/Raw_LoRa_Network/blob/master/tips%20and%20notes.md#tdma) strategy; enable power down with LowPower library <br>
 ## node-v4-downlink-basicSketch, 3.4.2019
@@ -100,9 +105,9 @@ Results: 440m, RSSI:-117 ~ -119
 - [ ] Intergrate watchdog timer & power_down with current structure on pro mini
 - [x] Test how setTime() in time library works or if checking setStatus() is needed || the +1 sec ahead sometimes is too fast, maybe insert some delay
 - [x] Evaluate if necessary to compensate time dirft of pro mini considering the Beacon Period could be set to 1 or 2 minutes which is quite short || the time drift of pro mini 8Mhz is around 1s per 2 minutes, thus with a 1-min-beacon-period there is no worry
-- [ ] Implement readServer() on Gateway and save instruction in stack
-- [ ] Implement sendDownlink() on Gateway
-- [ ] Implement readDownlink() on Node, and reserve callAcutator() function
+- [x] Implement readServer() on Gateway and save instruction in stack
+- [x] Implement sendDownlink() on Gateway
+- [x] Implement readDownlink() on Node, and reserve callAcutator() function
 - [ ] Implement data encryption
 - [ ] Node as forwarder or mesh network
 - [x] Create Timeseries database using influxDB and sqlite; display historical chart on Grafana with influxDB and on Node-RED dashboard with sqlite; implement time range selection
