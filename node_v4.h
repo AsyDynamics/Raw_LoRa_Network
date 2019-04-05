@@ -95,6 +95,12 @@ void displaySensor(){
 }
 
 // *****************************************************
+byte encrypt(byte val){
+  char key = '1'; // any
+  return val^key;
+}
+
+// *****************************************************
 void enter_sleep(float sleep_t) {
   byte counter8 = byte(sleep_t / 8);
   for (byte i = 0; i < counter8; i++) {
