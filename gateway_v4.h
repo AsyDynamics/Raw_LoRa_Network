@@ -125,6 +125,12 @@ void configNTP(){
 }
 
 // *****************************************************
+byte encrypt(byte val){
+  char key = '1'; // any
+  return val^key;
+}
+
+// *****************************************************
 void float2byte(byte &integer, byte &decimal, float value){
   integer = value;
   decimal = byte((value-integer)*(value<100?100:1000));
