@@ -59,8 +59,8 @@ Single node with two PT100 sensors and one BME280
 
 # Development log
 ## gateway-v4, node-v4, 5.4.2019
-**Gateway**: Implement sendDownlink inside LoRa onReceive function; implement reading command from MQTT server and sendDownlink(); Simplify the beacon message <br>
-**Node**: Implement readDownlink
+**Gateway**: Implement sendDownlink inside LoRa onReceive function; implement reading command from MQTT server and sendDownlink(); Simplify the beacon message; Simple encryption <br>
+**Node**: Implement readDownlink; Simple encryption
 ## node-v4-mimicMultiNode-withoutSensor-lowPower, 4.4.2019
 Upgrade the software structure with updated TDMA (https://github.com/AsyDynamics/Raw_LoRa_Network/blob/master/tips%20and%20notes.md#tdma) strategy; enable power down with LowPower library <br>
 ## node-v4-downlink-basicSketch, 3.4.2019
@@ -108,6 +108,6 @@ Results: 440m, RSSI:-117 ~ -119
 - [x] Implement readServer() on Gateway and save instruction in stack
 - [x] Implement sendDownlink() on Gateway
 - [x] Implement readDownlink() on Node, and reserve callAcutator() function
-- [ ] Implement data encryption
+- [x] Implement data encryption || Implemented a simple XOR encryption, the key could be updated periodically by lora message if needed
 - [ ] Node as forwarder or mesh network
 - [x] Create Timeseries database using influxDB and sqlite; display historical chart on Grafana with influxDB and on Node-RED dashboard with sqlite; implement time range selection
