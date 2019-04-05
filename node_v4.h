@@ -4,11 +4,6 @@
 #include <SPI.h>
 #include <LoRa.h>
 #include "LowPower.h"
-
-byte sync_Hr, sync_Min, sync_Sec;
-int msgCount = 0;
-unsigned long previousMiilis = 0;
-
 // node configuration
 #define localAddr         3
 #define groupID           0
@@ -43,26 +38,68 @@ unsigned long previousMiilis = 0;
 #define lora_power_h      17
 #define lora_power_l      12
 
-void initSensor(){
-  // dummy demo
+byte sync_Hr, sync_Min, sync_Sec;
+int msgCount = 0;
+unsigned long previousMiilis = 0;
+
+
+void run() {
+  if ( sync_Hr % SP_h == 0 && (sync_Min - SP_offset_m) % SP_m == 0) { // at that hour, and that(SP) minute
+    enter_sleep(SP_offset_s - preSP);                          // sleep to SP, then wake up and do some stuff
+    previousMiilis = millis();
+    readSensor();
+    while (millis() - previousMiilis < preSP * 1000) {
+      // do nothing
+      delay (50);
+    }
+    sendMessage(sync_Min % 5); // dummy example to mimic multi node
+    while (millis() - previousMiilis < (preSP + downlinkTimeout) * 1000) {
+      readDownlink(LoRa.parsePacket());
+      // callback(); // do some stuff, maybe run a actuator
+    }
+    // then go back to sleep again, may need to check if this is negative
+    enter_sleep( 60 - preBP - (millis() - previousMiilis) / 1000 - (SP_offset_s - preSP));
+  }
+  else {
+    enter_sleep(60 - preBP); // sleep to next BP
+  }
+  syncTime();
 }
 
-byte setMode(){
-  return 1; // dummy demo, 0-debug/lora test, 1-lowTxPower, 2-highTxPower, 3-senseOnly
+// *****************************************************
+void byte2float(byte integer, byte decimal, float &value){
+  value = integer + decimal/(integer<100? 100.0: 1000.0);
 }
 
-void readSensor(float &val1, float &val2, float &val3){
-  // dummy demo
+// *****************************************************
+float byte2float(byte integer, byte decimal){
+  return integer + decimal/(integer<100? 100.0: 1000.0);
 }
 
-void readDownlink(byte &command1, byte &command2){
-  // dummy demo
-}
-
+// *****************************************************
 void callback(command1, command2){
   // dummy demo
 }
 
+// *****************************************************
+void enter_sleep(float sleep_t) {
+  byte counter8 = byte(sleep_t / 8);
+  for (byte i = 0; i < counter8; i++) {
+    LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
+  }
+  for (byte i = 0; i < byte(sleep_t - counter8 * 8); i++) {
+    LowPower.powerDown(SLEEP_1S, ADC_OFF, BOD_OFF);
+  }
+  delay((sleep_t - byte(sleep_t)) * 1000);
+}
+
+// *****************************************************
+void float2byte(byte &integer, byte &decimal, float value){
+  integer = value;
+  decimal = byte((value-integer)*(value<100?100:1000));
+}
+
+// *****************************************************
 void initLora() {
   while (!LoRa.begin(433E6)) {             // initialize ratio at 915 MHz
     delay (300);                       // if failed, do nothing
@@ -73,36 +110,61 @@ void initLora() {
   LoRa.setTxPower(lora_power_l);
 }
 
+// *****************************************************
+void initSensor(){
+  // dummy demo
+}
 
-
-void syncTime() {
-  bool syncTimeFlag = false;
-  while (!syncTimeFlag) {
-    if (LoRa.parsePacket() != 0) {
-      byte recipient = LoRa.read();         // recipient address
-      byte group = LoRa.read();             // common group ID
-      if ((recipient == localAddr || recipient == broadcastAddr) && (group == groupID)) { // 0xFF reserved for broadcast
-        byte sender = LoRa.read();            // sender address
-        byte incomingMsgId = LoRa.read();     // incoming msg ID
-        sync_Hr =  LoRa.read();
-        sync_Min = LoRa.read();
-        // sync_Sec = LoRa.read();
-        // byte sync_Day = LoRa.read();
-        // byte sync_Mon = LoRa.read();
-        // byte sync_Yer = LoRa.read();
-        syncTimeFlag = true;
-      }
-    }
+// *****************************************************
+void ledBlink(int interval) {
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMiilis >= interval) {
+    previousMiilis = currentMillis;
+    digitalWrite(led_pin, !digitalRead(led_pin));
   }
 }
 
+// *****************************************************
+void readDownlink(byte packetSize){
+  if (packetSize == 0)  return;
+  byte msgLength = LoRa.available();
+  if (msgLength != LoRa.read() || msgLength == 4) return; // first LoRa read should be msgLength
+
+  byte recipient = LoRa.read();
+  byte group = LoRa.read();
+  if (recipient != localAddr && group != groupID) return;
+
+  byte msgContent[msgLength-4]; // -4 rather than -3 in Gateway, because on nodeside there is no need to read sender
+  for (int i = 0; i<msgLength-4; i++){ // remove the first three bytes
+    msgContent[i] = LoRa.read();       // first two of the rest bytes: localAddr|sensorMode
+  }
+  // msgContent structure: commandMode|sw1|sw1_time|possible sw2 and sw3
+  switch (msgContent[0]){ // commandMode, 0
+    default: case 0:
+      break;
+    case 1: case 2: case 3:
+      callback(msgContent[0], msgContent[1], msgContent[2]);
+      break;
+    case 4: case 5: case 6:
+      callback(msgContent[0], msgContent[1], msgContent[2], msgContent[3], msgContent[4]);
+      break;
+  }
+}
+
+// *****************************************************
+void readSensor(){
+  // dummy demo
+  return;
+}
+
+// *****************************************************
 void sendMessage(byte localAddress) {
   LoRa.beginPacket();                   // start packet
-  LoRa.write(destination);              // add destination address
-  LoRa.write(groupID);                  // add group ID
-  LoRa.write(localAddress);             // add sender address
-  LoRa.write(msgCount++);                 // add message ID
-  LoRa.write(sensorMode); // indicate sensor mode (how many sensors, how they list in data structure)
+  LoRa.write(18); // lora message length
+  LoRa.write(destination);
+  LoRa.write(groupID);
+  LoRa.write(localAddress);
+  LoRa.write(sensorMode);
   LoRa.write(random(15, 30));
   LoRa.write(random(0, 99));
   LoRa.write(random(15, 55));
@@ -118,49 +180,29 @@ void sendMessage(byte localAddress) {
   LoRa.endPacket();                     // finish packet and send it
 }
 
-void ledBlink(int interval) {
-  unsigned long currentMillis = millis();
-  if (currentMillis - previousMiilis >= interval) {
-    previousMiilis = currentMillis;
-    digitalWrite(led_pin, !digitalRead(led_pin));
+// *****************************************************
+byte setMode(){
+  return 1; // dummy demo, 0-debug/lora test, 1-lowTxPower, 2-highTxPower, 3-senseOnly
+}
+
+// *****************************************************
+void syncTime() {
+  bool syncTimeFlag = false;
+  while (!syncTimeFlag) {
+    if (LoRa.parsePacket() != 0) {
+      if (LoRa.available() == LoRa.read()){
+        byte recipient = LoRa.read();
+        byte group = LoRa.read();
+        if ((recipient == localAddr || recipient == broadcastAddr) && (group == groupID)) {
+          byte sender = LoRa.read();
+          sync_Hr =  LoRa.read();
+          sync_Min = LoRa.read();
+          syncTimeFlag = true;
+        }
+      }
+    }
   }
 }
 
-void enter_sleep(float sleep_t) {
-  byte counter8 = byte(sleep_t / 8);
-  for (byte i = 0; i < counter8; i++) {
-    LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
-  }
-  for (byte i = 0; i < byte(sleep_t - counter8 * 8); i++) {
-    LowPower.powerDown(SLEEP_1S, ADC_OFF, BOD_OFF);
-  }
-  delay((sleep_t - byte(sleep_t)) * 1000);
-}
-
-void run() {
-  if ( sync_Hr % SP_h == 0 && (sync_Min - SP_offset_m) % SP_m == 0) { // at that hour, and that(SP) minute
-    enter_sleep(SP_offset_s - preSP);                          // sleep to SP, then wake up and do some stuff
-    previousMiilis = millis();
-    // readSensor();
-    while (millis() - previousMiilis < preSP * 1000) {
-      // do nothing
-      delay (50);
-    }
-    sendMessage(sync_Min % 5); // dummy example to mimic multi node
-    bool downlinkFlag = false;
-    while (millis() - previousMiilis < (preSP + downlinkTimeout) * 1000 && !downlinkFlag) {
-      // readDownlink();
-      // callback(); // do some stuff, maybe run a actuator
-      delay (50);
-      downlinkFlag = true;
-    }
-    // then go back to sleep again, may need to check if this is negative
-    enter_sleep( 60 - preBP - (millis() - previousMiilis) / 1000 - (SP_offset_s - preSP));
-  }
-  else {
-    enter_sleep(60 - preBP); // sleep to next BP
-  }
-  syncTime();
-}
 
 #endif
