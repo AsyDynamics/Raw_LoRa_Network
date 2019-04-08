@@ -58,6 +58,8 @@ Single node with two PT100 sensors and one BME280
 
 
 # Development log
+## gateway-v4, node-v4, 8.4.2019
+Use led blink to mimic downlink instruction, test passed. One more optimization to be implemented: during recv downlink slot, need a flag to exit recv mode once downlink arrived but Node still in the recv slot, to save energy.
 ## gateway-v4, node-v4, 5.4.2019
 **Gateway**: Implement sendDownlink inside LoRa onReceive function; implement reading command from MQTT server and sendDownlink(); Simplify the beacon message; Simple encryption <br>
 **Node**: Implement readDownlink; Simple encryption
