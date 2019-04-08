@@ -238,7 +238,7 @@ void onReceive(int packetSize) {
       }
       break;
   default: case 1: {
-        byte i = 2; // first two bits: 0-localAddr, 1-sensorMode, sensor value start from 2
+        byte i = 3; // first two bits: 0-localAddr, 1 -battery, 2-sensorMode, sensor value start from 3
         float bmeT = byte2float(msgContent[i++], msgContent[i++]);
         float bmeH = byte2float(msgContent[i++], msgContent[i++]);
         float bmeP = byte2float(msgContent[i++], msgContent[i++]);
