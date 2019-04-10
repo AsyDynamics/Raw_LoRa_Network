@@ -7,6 +7,7 @@ This is my attemp to implement a private network in **raw LoRa layer** based on 
 
 ![3](https://user-images.githubusercontent.com/33332225/54754480-eb5e5c80-4be3-11e9-84cb-c3918142bf16.PNG)
 
+
 # Overall process
 ## Node
 * During bootup/setup, init lora, wait for Beacon message and set local time
@@ -18,6 +19,7 @@ This is my attemp to implement a private network in **raw LoRa layer** based on 
 * onReceive uplink from Node, decode data and send to server, send downlink message with if any instruction
 
 ![lora state machie (1)](https://user-images.githubusercontent.com/33332225/54755549-74769300-4be6-11e9-8199-ed42681b27d6.png)
+
 
 # TDMA scheme
 ## v2-4.4.2019
@@ -58,15 +60,27 @@ Single node with two PT100 sensors and one BME280
 
 
 # Development log
-## gateway-v4, node-v4, 8.4.2019
-Use led blink to mimic downlink instruction, test passed. One more optimization to be implemented: during recv downlink slot, need a flag to exit recv mode once downlink arrived but Node still in the recv slot, to save energy.
+## gateway-v4, node-v4, 8.4.2019 <br>
+* Use led blink to mimic downlink instruction, test passed
+* Add flag to exit recv mode once downlink arrived but Node still in the recv slot, to save energy
 ## gateway-v4, node-v4, 5.4.2019
-**Gateway**: Implement sendDownlink inside LoRa onReceive function; implement reading command from MQTT server and sendDownlink(); Simplify the beacon message; Simple encryption <br>
-**Node**: Implement readDownlink; Simple encryption
+**Gateway**: <br>
+* Implement sendDownlink inside LoRa onReceive function
+* implement reading command from MQTT server and sendDownlink()
+* Simplify the beacon message
+* Simple encryption <br>
+
+**Node**: <br> 
+* Implement readDownlink
+* Simple encryption
 ## node-v4-mimicMultiNode-withoutSensor-lowPower, 4.4.2019
-Upgrade the software structure with updated TDMA (https://github.com/AsyDynamics/Raw_LoRa_Network/blob/master/tips%20and%20notes.md#tdma) strategy; enable power down with LowPower library <br>
+* Upgrade the software structure with updated TDMA (https://github.com/AsyDynamics/Raw_LoRa_Network/blob/master/tips%20and%20notes.md#tdma) strategy
+* enable power down with LowPower library <br>
 ## node-v4-downlink-basicSketch, 3.4.2019
-Not complete yet, added mode selection at bootup (setup) stage, with four modes in total, 00-debug, 01-lowTxPower, 10-mediumTxPower, 11-highTxPower respectively; Make it clear how Sense Period offset is calculated based on SP and localAddr; Define sensor structor to use it more conviently; Implement the basic of receiving slot after each SP, the downlink recv and actuator operation; Watchdog and powerdown still not taken into account <br>
+* Not complete yet, added mode selection at bootup (setup) stage, with four modes in total, 00-debug, 01-lowTxPower, 10-mediumTxPower, 11-highTxPower respectively
+* Make it clear how Sense Period offset is calculated based on SP and localAddr
+* Define sensor structor to use it more conviently
+* Implement the basic of receiving slot after each SP, the downlink recv and actuator operation <br>
 ## node-v3-mimic-multiNode and gateway-nodered-v2-mimic, 27.03.2019
 Mimic multiple node and create node red dashboard <br>
 ![screencapture-192-168-178-38-1880-ui-2019-03-27-22_29_00](https://user-images.githubusercontent.com/33332225/55115008-bb332400-50e3-11e9-9f00-bb2a69edd5f9.jpg)
@@ -111,5 +125,11 @@ Results: 440m, RSSI:-117 ~ -119
 - [x] Implement sendDownlink() on Gateway
 - [x] Implement readDownlink() on Node, and reserve callAcutator() function
 - [x] Implement data encryption || Implemented a simple XOR encryption, the key could be updated periodically by lora message if needed
-- [ ] Node as forwarder or mesh network
+- [ ] Node as forwarder or mesh network || With radiohead this feature comes out of box
 - [x] Create Timeseries database using influxDB and sqlite; display historical chart on Grafana with influxDB and on Node-RED dashboard with sqlite; implement time range selection
+- [ ] Play with Radiohead library
+- [ ] Figure out CAD mode and interrupt to save energy, either using radiohead or arduino-lora-forked
+- [ ] Test RFO and PA_BOOST setup's range and signal strength, assuming both set +14
+- [ ] Press test/ packet loss test
+- [ ] Add watchdog for nodemcu as it easily gets frozen
+- [ ] Add led or oled screen on gateway/nodemcu to indicate current and historical status
