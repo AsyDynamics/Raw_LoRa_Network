@@ -71,26 +71,27 @@ void syncTime();
 
 
 // **********************************************************************
-byte sync_Hr, sync_Min, sync_Sec;
-int msgCount = 0;
+byte sync_Hr, sync_Min;
 unsigned long previousMiilis = 0;
 
 void run() {
   if ( sync_Hr % SP_h == 0 && (sync_Min - SP_offset_m) % SP_m == 0) { // at that hour, and that(SP) minute
     enter_sleep(SP_offset_s - preSP);                          // sleep to SP, then wake up and do some stuff
-    previousMiilis = millis();
     byte sensorValue[12] = {}; // max 6 sensors with each 2 byte value
     readSensor(sensorValue);
     while (millis() - previousMiilis < preSP * 1000) {
       // do nothing
       delay (50);
     }
+    previousMiilis = millis(); // millis at SP exactly
     sendUplink((sync_Min % 5+1), sensorValue); // dummy example to mimic multi node
-    while (millis() - previousMiilis < (preSP + downlinkTimeout) * 1000) {
+    bool downlinkFlag = false;
+    while (millis() - previousMiilis < (preSP + downlinkTimeout) * 1000 && !downlinkFlag) {
       readDownlink(LoRa.parsePacket());
+      downlinkFlag = true;
     }
     // then go back to sleep again, may need to check if this is negative
-    enter_sleep( 60 - preBP - (millis() - previousMiilis) / 1000 - (SP_offset_s - preSP));
+    enter_sleep( 60 - preBP - SP_offset_s - (millis() - previousMiilis)/1000 );
   }
   else {
     enter_sleep(60 - preBP); // sleep to next BP
