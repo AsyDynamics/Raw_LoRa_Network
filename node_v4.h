@@ -63,7 +63,7 @@ void ledBlink(int interval);
 void ledFlash(byte times);
 void onFALLING();
 byte readBattery();
-void readDownlink(byte packetSize);
+void readDownlink(byte packetSize, bool &downlinkFlag);
 void readSensor(byte *value);
 void sendMsg(byte *message, byte msgLength);
 void sendMsg(byte *preamble, byte preambleLength, byte *sensorValue, byte sensorLength);
@@ -89,8 +89,7 @@ void run() {
     sendUplink((sync_Min % 5+1), sensorValue); // dummy example to mimic multi node
     bool downlinkFlag = false;
     while (millis() - previousMiilis < (preSP + downlinkTimeout) * 1000 && !downlinkFlag) {
-      readDownlink(LoRa.parsePacket());
-      downlinkFlag = true;
+      readDownlink(LoRa.parsePacket(), downlinkFlag);
     }
     // then go back to sleep again, may need to check if this is negative
     enter_sleep( 60 - preBP - SP_offset_s - (millis() - previousMiilis)/1000 );
@@ -252,6 +251,8 @@ void readDownlink(byte packetSize){
       callback(msgContent[0], msgContent[1], msgContent[2], msgContent[3], msgContent[4],  msgContent[5], msgContent[6]);
       break;
   }
+  LoRa.sleep();
+  downlinkFlag = true;
 }
 
 // *****************************************************
@@ -277,6 +278,7 @@ void sendMsg(byte *message, byte msgLength){
     LoRa.write(message[i]);
   }
   LoRa.endPacket();
+  LoRa.sleep();
 }
 
 // *****************************************************
@@ -289,6 +291,7 @@ void sendMsg(byte *preamble, byte preambleLength, byte *sensorValue, byte sensor
     LoRa.write(sensorValue[i]);
   }
   LoRa.endPacket();
+  LoRa.sleep();
 }
 
 // *****************************************************
@@ -350,6 +353,7 @@ void syncTime() {
       }
     }
   }
+  LoRa.sleep();
 }
 
 
