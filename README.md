@@ -129,7 +129,7 @@ Results: 440m, RSSI:-117 ~ -119
 - [x] Create Timeseries database using influxDB and sqlite; display historical chart on Grafana with influxDB and on Node-RED dashboard with sqlite; implement time range selection
 - [ ] Play with Radiohead library
 - [ ] Figure out CAD mode and interrupt to save energy, either using radiohead or arduino-lora-forked
-- [ ] Test RFO and PA_BOOST setup's range and signal strength, assuming both set +14
+- [x] Test RFO and PA_BOOST setup's range and signal strength, assuming both set +14 || conclusion: AI thinker module (ra-02) has NO RFO Wire connected, only PA_BOOST
 - [ ] Press test/ packet loss test
 - [ ] Add watchdog for nodemcu as it easily gets frozen
 - [ ] Add led or oled screen on gateway/nodemcu to indicate current and historical status
