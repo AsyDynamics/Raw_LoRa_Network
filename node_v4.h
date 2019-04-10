@@ -19,8 +19,10 @@
 #define preSP             1
 #define SP_m              1
 #define SP_h              1
-#define SP_offset_m       byte(ceil(localAddr/10.0)-1)
-#define SP_offset_s       ((localAddr-1)%10+1)*5
+#define slotInterval      5 // slot for each node, from 2-5 seconds
+#define numSlot           byte((60-slotInterval*2-preBP)/slotInterval+1) // num of slot per minute, range from 10 - 28
+#define SP_offset_m       byte(ceil(localAddr*1.0/numSlot)-1)
+#define SP_offset_s       ( (localAddr-1)%numSlot + 1) * slotInterval
 
 
 // timeout configuration
