@@ -13,6 +13,10 @@ The receiver undertakes a preamble detection process that periodically restarts.
 
 **Header** default mode is explict. In certain scenarios, where the payload, coding rate and CRC presence are fixed or known in advance, it may be advantageous to reduce transmission time by invoking implicit header mode. In this mode the header is removed from the packet. In this case the payload length, error coding rate and presence of the payload CRC must be manually configured on both sides of the radio link. 
 
+**Power Amplifier** consists of two mode basically, the RFO and PA_BOOST, depends on the hardware/module design. The RFO is more efficient ranging from 0-14dBm, while the PA_BOOST has max +20dBm. The typical current of RFO mode at +13dBm is 29mA, and for PA_BOOST, it's 120mA when comes to +20dBm. By default, the arduino-lora library uses PA_BOOST mode and to switch to RFO, the second parameter in setTxPower() should be speicified.
+
+**CAD** is a feature that be made use of to trigger mcu's external interrupt, thus putting it to sleep mode to save energy. One of the arduino-lora fork repo https://github.com/szotsaki/arduino-LoRa/blob/master/examples/LoRaCADDetectionWithInterrupt/LoRaCADDetectionWithInterrupt.ino has implmented it already. This feature comes out of box in Radiohead library.
+
 # Node RED
 ## Database and Chart
 * Using **DashDB** to store data in IBM cloud. https://internet-of-things.blog/en/how-to-backup-and-restore-chart-data-in-node-red-dashboard/
