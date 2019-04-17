@@ -1,5 +1,5 @@
 # LoRa
-* NTP tutorial: https://lastminuteengineers.com/esp32-ntp-server-date-time-tutorial/
+* [NTP tutorial](https://lastminuteengineers.com/esp32-ntp-server-date-time-tutorial/)
 
 * global variable defined in header file: extern TYPE VAR_NAME
 
@@ -15,12 +15,12 @@ The receiver undertakes a preamble detection process that periodically restarts.
 
 **Power Amplifier** consists of two mode basically, the RFO and PA_BOOST, depends on the hardware/module design. The RFO is more efficient ranging from 0-14dBm, while the PA_BOOST has max +20dBm. The typical current of RFO mode at +13dBm is 29mA, and for PA_BOOST, it's 120mA when comes to +20dBm. By default, the arduino-lora library uses PA_BOOST mode and to switch to RFO, the second parameter in setTxPower() should be speicified.
 
-**CAD** is a feature that be made use of to trigger mcu's external interrupt, thus putting it to sleep mode to save energy. One of the arduino-lora fork repo https://github.com/szotsaki/arduino-LoRa/blob/master/examples/LoRaCADDetectionWithInterrupt/LoRaCADDetectionWithInterrupt.ino has implmented it already. This feature comes out of box in Radiohead library.
+**CAD** is a feature that be made use of to trigger mcu's external interrupt, thus putting it to sleep mode to save energy. One of the [arduino-lora fork repo](https://github.com/szotsaki/arduino-LoRa/blob/master/examples/LoRaCADDetectionWithInterrupt/LoRaCADDetectionWithInterrupt.ino) has implmented it already. This feature comes out of box in Radiohead library.
 
 # Node RED
 ## Database and Chart
-* Using **DashDB** to store data in IBM cloud. https://internet-of-things.blog/en/how-to-backup-and-restore-chart-data-in-node-red-dashboard/
-* Using **node-red-contrib-graphs** package with JSON format including UNIX timestamp. https://flows.nodered.org/node/node-red-contrib-graphs
+* [Using **DashDB** to store data in IBM cloud](https://internet-of-things.blog/en/how-to-backup-and-restore-chart-data-in-node-red-dashboard/)
+* [Using **node-red-contrib-graphs** package with JSON format including UNIX timestamp](https://flows.nodered.org/node/node-red-contrib-graphs)
 
 ## Homekit and Homekit-bridged
 Bridged is better
@@ -34,15 +34,15 @@ Bridged is better
 # openHAB
 
 # mimic NOIP
-* remote.it or weaved https://remote.it/
-* ngrok https://ngrok.com/ ```ngrok http portNum```
-* dataplicity https://dataplicity.com 
-* nginx https://www.nginx.com/ to host a webserver
+* [remote.it or weaved](https://remote.it/)
+* [ngrok](https://ngrok.com/) ```ngrok http portNum```
+* [dataplicity](https://dataplicity.com) 
+* [nginx](https://www.nginx.com/) to host a webserver
 
 # Software state flow
 ## TDMA
 Using the Low Power library, arduino loses the function of keep date/time running. Thus the software could be modified as to sleep-to-next-BP-or-SP rather keep arduino running and checking if the BP or SP is triggered. To do so, seveal variable could be defined:
-~~~
+~~~cpp
 #define BP            1  // minute
 #define preBP         2  // second, time to wakeup ahead of BP
 #define localAddr     12 // from 1 to 254, 0 reserved for gateway, 255 reserved for broadcast
@@ -55,22 +55,22 @@ Using the Low Power library, arduino loses the function of keep date/time runnin
 ~~~
 The **sleep-to-next-BP-or-SP** could be divided into two scenarios: <br>
 For none Sense Period scenario, the sleep time after receving beacon is fixed, as the blue part indicated in the chart.
-~~~
+~~~cpp
 sleep(60-preBP);
 ~~~
 ![time-nonSP](https://user-images.githubusercontent.com/33332225/55567034-3193df80-56fd-11e9-8208-57fa47af6528.png)
 
 For Sense Period scenario, the sleep time could be dynamic due to possible callback command from server. Thus the sleep time in that minute actually consists of two parts, the one before SP and the one after SP. For the previous one, just
-~~~
+~~~cpp
 sleep(SP_offset_s - preSP);
 ~~~
 And for the latter one, it should be calculated 
-~~~
+~~~cpp
 sleep( 60-preBP - callback_finished_time_corresponding_to_0_second);
 ~~~
 ![time-SP](https://user-images.githubusercontent.com/33332225/55567030-2ccf2b80-56fd-11e9-8fa5-f7face27a53f.png)
 The above mentioned logic could be represented by
-~~~
+~~~cpp
 HH = LoRa.read();
 MM = LoRa.read();
 
