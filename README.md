@@ -116,20 +116,20 @@ Results: 440m, RSSI:-117 ~ -119
 - [x] Play with Node-RED with conclusion that it doesn't support multi-user/dashboard by itself
 - [x] Listen Before Talk if necessary; need timeout to avoid lockup; not intergrate with current code
 - [x] Make UI for instruction input; simpled button and switch on node red
-- [x] Implement re-syncTime for fear of lost beacon and timedrift caused beacon-recv-window drift || not necessary, if beacon is lost or local time is incorrect, it will go into syncTime mode anyway, and until it get synced it will not jump out of the loop
-- [x] Timeout of syncTime || not necesary, if the beacon message is not received on time, it means either the local time is incorrect or something wrong with the beacon server, thus need to figure it out
+- [x] Implement re-syncTime for fear of lost beacon and timedrift caused beacon-recv-window drift. Conclusion: not necessary, if beacon is lost or local time is incorrect, it will go into syncTime mode anyway, and until it get synced it will not jump out of the loop 
+- [x] Timeout of syncTime. Conclusion: not necesary, if the beacon message is not received on time, it means either the local time is incorrect or something wrong with the beacon server, thus need to figure it out
 - [ ] Intergrate watchdog timer & power_down with current structure on pro mini
-- [x] Test how setTime() in time library works or if checking setStatus() is needed || the +1 sec ahead sometimes is too fast, maybe insert some delay
-- [x] Evaluate if necessary to compensate time dirft of pro mini considering the Beacon Period could be set to 1 or 2 minutes which is quite short || the time drift of pro mini 8Mhz is around 1s per 2 minutes, thus with a 1-min-beacon-period there is no worry
+- [x] Test how setTime() in time library works or if checking setStatus() is needed. Conclusion: the +1 sec ahead sometimes is too fast, maybe insert some delay
+- [x] Evaluate if necessary to compensate time dirft of pro mini considering the Beacon Period could be set to 1 or 2 minutes which is quite short. Conclusion: the time drift of pro mini 8Mhz is around 1s per 2 minutes, thus with a 1-min-beacon-period there is no worry
 - [x] Implement readServer() on Gateway and save instruction in stack
 - [x] Implement sendDownlink() on Gateway
 - [x] Implement readDownlink() on Node, and reserve callAcutator() function
-- [x] Implement data encryption || Implemented a simple XOR encryption, the key could be updated periodically by lora message if needed
-- [ ] Node as forwarder or mesh network || With radiohead this feature comes out of box
+- [x] Implement data encryption. Conclusion: Implemented a simple XOR encryption, the key could be updated periodically by lora message if needed
+- [ ] Node as forwarder or mesh network. Conclusion: With radiohead this feature comes out of box
 - [x] Create Timeseries database using influxDB and sqlite; display historical chart on Grafana with influxDB and on Node-RED dashboard with sqlite; implement time range selection
 - [ ] Play with Radiohead library
 - [ ] Figure out CAD mode and interrupt to save energy, either using radiohead or arduino-lora-forked
-- [x] Test RFO and PA_BOOST setup's range and signal strength, assuming both set +14 || conclusion: AI thinker module (ra-02) has NO RFO Wire connected, only PA_BOOST
+- [x] Test RFO and PA_BOOST setup's range and signal strength, assuming both set +14. Conclusion: AI thinker module (ra-02) has NO RFO Wire connected, only PA_BOOST
 - [ ] Press test/ packet loss test
 - [ ] Add watchdog for nodemcu as it easily gets frozen
 - [ ] Add led or oled screen on gateway/nodemcu to indicate current and historical status
