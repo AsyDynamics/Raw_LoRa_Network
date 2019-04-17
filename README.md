@@ -13,6 +13,7 @@ This is my attemp to implement a private network in **raw LoRa layer** based on 
 * During bootup/setup, init lora, wait for Beacon message and set local time
 * At each BP (Beacon Period), wake up, wait for Beacon and sync local time, then go sleep
 * At each SP (Sense Period), wake up, read sensors and send uplink message, wait for downlink message for X sec, call actuator (if there is instruction from Gateway), then go sleep
+
 ## Gateway
 * During bootup/setup, init lora, connect wifi, connect NTP server and sync local time
 * At each BP, broadcast Beacon message, read from server and save instructions in stack, then go onReceive mode
@@ -24,8 +25,10 @@ This is my attemp to implement a private network in **raw LoRa layer** based on 
 # TDMA scheme
 ## v2-4.4.2019
 Added some sketch to better illustrate and calculate the desired sleep time. [Detail at here](https://github.com/AsyDynamics/Raw_LoRa_Network/blob/master/tips%20and%20notes.md#tdma)
+
 ## v2-21.3.2019
 Modified to send downlink message upon each uplink with instruction. Thus reserve a lora.read() window for Node after each SP
+
 ## v1-20.3.2019
 No private downlink message. Instructions embedded in Beacon message following global time
 ![lora tdma](https://user-images.githubusercontent.com/33332225/54752895-ea2b3080-4bdf-11e9-9933-cb70d1354f7d.png)
@@ -33,17 +36,22 @@ No private downlink message. Instructions embedded in Beacon message following g
 
 # Data structure
 Uplink | Beacon | Downlink | MQTT-payload from server
-![data (1)](https://user-images.githubusercontent.com/33332225/55631222-d672f300-57b7-11e9-8637-3f4aea1ae191.png) <br>
+![data (1)](https://user-images.githubusercontent.com/33332225/55631222-d672f300-57b7-11e9-8637-3f4aea1ae191.png)
+
 ## v3.2-5.4.2019
 * Include message length; remove useless msgID; Implement control command of max 3 switches in downlink
+
 ## v3.1-3.4.2019
-* Consider removing Year, Month, Day, Second in beacon message with v4-program, since there is no clock running on nodes. They just need to know when is XX:YY:00 <br>
+* Consider removing Year, Month, Day, Second in beacon message with v4-program, since there is no clock running on nodes. They just need to know when is XX:YY:00
+
 ## v3-3.4.2019
 * Consider sending message length as well to make sure the recved message is complete || haven't implemented
+
 ## v2-21.2.2019
 * uplink and beacon remained
 * downlink from gateway <br>
 [ destination Addr | groupID | local Addr | msg count | actuator ID | instruction | if any more ]
+
 ## v1-20.03.2019
 * uplink message <br>
 [ destination Addr | groupID | local Addr | msg count | integer of pt100-1 | decimal of pt100-1 | other sensor values divied into integer and decimal ]
@@ -60,34 +68,41 @@ Single node with two PT100 sensors and one BME280
 
 
 # Development log
-## gateway-v4, node-v4, 8.4.2019 <br>
+## gateway-v4, node-v4, 8.4.2019
 * Use led blink to mimic downlink instruction, test passed
 * Add flag to exit recv mode once downlink arrived but Node still in the recv slot, to save energy
+
 ## gateway-v4, node-v4, 5.4.2019
-**Gateway**: <br>
+**Gateway**:
 * Implement sendDownlink inside LoRa onReceive function
 * implement reading command from MQTT server and sendDownlink()
 * Simplify the beacon message
 * Simple encryption <br>
 
-**Node**: <br> 
+**Node**:
 * Implement readDownlink
 * Simple encryption
+
 ## node-v4-mimicMultiNode-withoutSensor-lowPower, 4.4.2019
 * Upgrade the software structure with [updated TDMA strategy](https://github.com/AsyDynamics/Raw_LoRa_Network/blob/master/tips%20and%20notes.md#tdma)
-* enable power down with LowPower library <br>
+* enable power down with LowPower library
+
 ## node-v4-downlink-basicSketch, 3.4.2019
 * Not complete yet, added mode selection at bootup (setup) stage, with four modes in total, 00-debug, 01-lowTxPower, 10-mediumTxPower, 11-highTxPower respectively
 * Make it clear how Sense Period offset is calculated based on SP and localAddr
 * Define sensor structor to use it more conviently
-* Implement the basic of receiving slot after each SP, the downlink recv and actuator operation <br>
+* Implement the basic of receiving slot after each SP, the downlink recv and actuator operation
+
 ## node-v3-mimic-multiNode and gateway-nodered-v2-mimic, 27.03.2019
 Mimic multiple node and create node red dashboard <br>
 ![screencapture-192-168-178-38-1880-ui-2019-03-27-22_29_00](https://user-images.githubusercontent.com/33332225/55115008-bb332400-50e3-11e9-9f00-bb2a69edd5f9.jpg)
+
 ## node-v3 and gateway-v3, 25.03.2019
 More stable compared with v2. Fixed the syncTime problem.
+
 ## node-v2 and gateway-v2, 20.03.2019
 Duplex mode. Broadcast Beacon per 2 minutes. No private downlink from Gateway after each uplink. SP based on localAddress not implemented yet in code but designed in comment. Bascially both Gateway and Node works fine but Node sometimes send uplink message not on correct time.
+
 ## node-v1 and gateway-v1
 Simplex mode, just sensor data from Node to Gateway. Connected to thingsboard.
 
@@ -104,6 +119,7 @@ Results: 440m, RSSI:-117 ~ -119
 
 *  15.03.2019, 435Mhz, SF-10, BD-125, txPower-17, (5dbi?) antenna at 3rd floor indoor <br>. Result: 400m, RSSI: -108 ~ -125
 ![2](https://user-images.githubusercontent.com/33332225/54755892-53fb0880-4be7-11e9-851b-d2843232f41c.PNG)
+
 ## Power consumption
 
 
