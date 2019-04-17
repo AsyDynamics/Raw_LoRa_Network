@@ -1,6 +1,6 @@
 
 # Raw LoRa Network
-This is my attemp to implement a private network in **raw LoRa layer** based on arduino-LoRa library(https://github.com/sandeepmistry/arduino-LoRa). The hardware consists of Nodemcu as Gateway and Arduino pro mini as Node. Both Gateway and Node use Ra-02 (rfm98) as LoRa transceiver module. The system features:
+This is my attemp to implement a private network in **raw LoRa layer** based on [arduino-LoRa library](https://github.com/sandeepmistry/arduino-LoRa). The hardware consists of Nodemcu as Gateway and Arduino pro mini as Node. Both Gateway and Node use Ra-02 (rfm98) as LoRa transceiver module. The system features:
 * TDMA like class B to save energy
 * Beacon message to sync time needed for TDMA
 * Star network with forwarder
@@ -23,7 +23,7 @@ This is my attemp to implement a private network in **raw LoRa layer** based on 
 
 # TDMA scheme
 ## v2-4.4.2019
-Added some sketch to better illustrate and calculate the desired sleep time. Detail at https://github.com/AsyDynamics/Raw_LoRa_Network/blob/master/tips%20and%20notes.md#tdma <br>
+Added some sketch to better illustrate and calculate the desired sleep time. [Detail at here](https://github.com/AsyDynamics/Raw_LoRa_Network/blob/master/tips%20and%20notes.md#tdma)
 ## v2-21.3.2019
 Modified to send downlink message upon each uplink with instruction. Thus reserve a lora.read() window for Node after each SP
 ## v1-20.3.2019
@@ -74,7 +74,7 @@ Single node with two PT100 sensors and one BME280
 * Implement readDownlink
 * Simple encryption
 ## node-v4-mimicMultiNode-withoutSensor-lowPower, 4.4.2019
-* Upgrade the software structure with updated TDMA (https://github.com/AsyDynamics/Raw_LoRa_Network/blob/master/tips%20and%20notes.md#tdma) strategy
+* Upgrade the software structure with [updated TDMA strategy](https://github.com/AsyDynamics/Raw_LoRa_Network/blob/master/tips%20and%20notes.md#tdma)
 * enable power down with LowPower library <br>
 ## node-v4-downlink-basicSketch, 3.4.2019
 * Not complete yet, added mode selection at bootup (setup) stage, with four modes in total, 00-debug, 01-lowTxPower, 10-mediumTxPower, 11-highTxPower respectively
